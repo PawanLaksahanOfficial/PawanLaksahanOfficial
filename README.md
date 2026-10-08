@@ -10,6 +10,9 @@ interface in a message pipeline.
 
 🎓 **AWS Certified Solutions Architect – Associate** (SAA-C03)
 
+📧 [Email](mailto:pawanlaksahan10@gmail.com) · 💼 [LinkedIn](https://www.linkedin.com/in/pawanlaksahan-22a451209) ·
+🚀 Live: [Nostalgia AI](https://nostalgia-ai-frontend.vercel.app) · [ELVI Music Studio](https://elvistudio.dpdns.org)
+
 ---
 
 ## Featured projects
@@ -19,35 +22,70 @@ interface in a message pipeline.
 [`nostalgia-ai-backend`](https://github.com/PawanLaksahanOfficial/nostalgia-ai-backend) ·
 [`nostalgia-ai-frontend`](https://github.com/PawanLaksahanOfficial/nostalgia-ai-frontend)
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/PawanLaksahanOfficial/nostalgia-ai-backend/main/docs/example-frame.jpg" alt="A frame from a generated video: a still lake lined with trees, the AI-written narration as captions, and a small 'Made with Nostalgia AI' watermark" width="640">
+</p>
+
 Turns a written memory and an optional photo into a narrated, captioned video. A background
-worker runs the whole pipeline — **LLM narrative → speech synthesis → caption timing → FFmpeg
-composition → object storage** — while the client polls for progress. Around it sits the
-production machinery that makes it a product rather than a demo: subscription billing with
-idempotent Stripe webhooks, atomic per-plan quota enforcement, range-enabled media streaming,
-and opaque share tokens with expiry and revocation so a recipient needs no account.
+worker runs the whole pipeline — **LLM script → voice-over → word-timed captions → stock
+photos → FFmpeg composition → object storage** — while the client polls for progress. Around
+it sits the production machinery that makes it a product rather than a demo: subscription
+billing with idempotent Stripe webhooks, atomic per-plan quota enforcement, range-enabled media
+streaming, and opaque share tokens with expiry and revocation so a recipient needs no account.
 
-The API is organised as four projects with dependencies pointing inward (Domain → Application
-→ Infrastructure → API), which keeps the FFmpeg, storage, email, and payment integrations at
-the edges and the business rules independent of them.
+- **Abuse protection.** Every free video draws on one shared AI quota, so sign-ups pass layered
+  checks: email confirmation, Gmail dot/`+tag` canonicalisation, a ~9,000-domain disposable-email
+  blocklist, and rolling per-network and site-wide caps — with client IPs stored only as keyed
+  one-way hashes.
+- **Built for free tiers.** The live service runs on 0.1 CPU and 512 MB, so the pipeline renders
+  one job at a time, falls back across a list of LLM models, and degrades gracefully — narrating
+  the user's own text — when the AI is unavailable.
+- **Clean Architecture.** Four projects with dependencies pointing inward (Domain → Application
+  → Infrastructure → API) keep FFmpeg, storage, email, and payments at the edges. Repository
+  tests run against a real EF Core context on SQLite, not mocks.
 
-> **Backend** · .NET 8 · ASP.NET Core · EF Core 9 · PostgreSQL · Stripe · Cloudflare R2 ·
-> AWS SES · FFmpeg · Docker · 114 xUnit tests
+> **Backend** · .NET 8 · ASP.NET Core · EF Core 9 · PostgreSQL · OpenRouter · Edge TTS · FFmpeg ·
+> Stripe · S3-compatible storage (Supabase / Cloudflare R2) · Brevo / AWS SES · Docker on Render ·
+> 190+ xUnit tests
 >
-> **Frontend** · React 19 · TypeScript · Vite · Redux Toolkit · React Router · Vitest
+> **Frontend** · React 19 · TypeScript · Vite · Redux Toolkit · React Router · Google & Meta
+> sign-in · Vitest + Testing Library · Vercel
 
-### 🎸 Music Studio & Instrument Rental
+### 🎸 ELVI Music Studio — [**live demo →**](https://elvistudio.dpdns.org)
 
 [`Music-Studio-and-Instruments-Renting-Management-System`](https://github.com/PawanLaksahanOfficial/Music-Studio-and-Instruments-Renting-Management-System)
+· one-click read-only demo login
 
-Rental and booking management for a music studio — inventory, reservations, and customer
-notifications. QR-code check-in for instrument handover, generated PDF invoices, transactional
-email and SMS, and scheduled jobs for reminders and overdue returns.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/PawanLaksahanOfficial/Music-Studio-and-Instruments-Renting-Management-System/main/docs/screenshots/rentals.png" alt="ELVI Music Studio's Product Rentals page: summary cards for rentals out, overdue, due today and unpaid, above a table of rentals with status and payment badges" width="640">
+</p>
+
+Runs a music studio end to end: instrument rentals with QR checkout and returns, recording-room
+bookings, invoicing, customer records, and role-based staff accounts. Returns calculate late fees
+automatically and send damaged gear to a repair queue; SMS and email reminders go out before and
+after each due date; a statistics dashboard exports to PDF. Responsive down to phone width, with
+light and dark themes and a <kbd>Ctrl</kbd>+<kbd>K</kbd> command palette.
+
+- **No double-booking under concurrency.** Each booking bumps a per-room lock document inside a
+  MongoDB transaction, so two simultaneous bookings for the same room conflict and serialise
+  instead of both succeeding.
+- **Idempotent reminders.** Each reminder sent is recorded on the rental, so re-running the
+  scheduled job never sends the same SMS twice.
+- **Server-side money.** Prices, late fees, and invoice totals are always computed on the
+  server, never taken from the browser.
+- **Session security.** JWT in an `httpOnly`, `SameSite=Strict` cookie with instant revocation,
+  a CSRF header check, Zod validation on every request, and rejection of MongoDB operator
+  injection.
 
 A deliberate counterpart to the project above: Node and a document database rather than .NET
 and a relational one, on the same end-to-end responsibilities.
 
-> Node.js · Express · TypeScript · MongoDB / Mongoose · JWT · AWS SES + SNS · node-cron ·
-> React · html5-qrcode · jsPDF
+> **Backend** · Node.js 24 · Express 5 · TypeScript · MongoDB Atlas / Mongoose (multi-document
+> transactions) · Zod · AWS SES + SNS · node-cron · Pino · 45 integration tests (Vitest +
+> Supertest on an in-memory replica set) · Render
+>
+> **Frontend** · React 19 · Tailwind CSS v4 · Radix UI · TanStack Query & Table · React Hook
+> Form · Recharts · html5-qrcode · jsPDF · Vercel
 
 ---
 
@@ -96,10 +134,12 @@ Most of my production work lives in private repositories. What it amounted to:
 
 | Area | Technologies |
 | :--- | :--- |
-| **Languages & frameworks** | C#, .NET 8 / .NET Core, ASP.NET Core (Web API, MVC), Entity Framework Core, TypeScript, JavaScript, React, Next.js, Node.js, Python, T-SQL |
-| **Cloud & serverless** | AWS — Lambda, ECS Fargate, EventBridge, SQS, SNS, SES, API Gateway, EC2 Auto Scaling, S3, ECR, VPC, Route 53, ELB, WAF, IAM, Parameter Store, CloudWatch · Azure core & app services |
+| **Backend** | C#, .NET 8 / .NET Core, ASP.NET Core (Web API, MVC), Entity Framework Core, Node.js, Express, Python, T-SQL |
+| **Frontend** | TypeScript, JavaScript, React, Next.js (SSR), Redux Toolkit, TanStack Query, Tailwind CSS, Vite |
+| **Cloud & serverless** | AWS — Lambda, ECS Fargate, EventBridge, SQS, SNS, SES, API Gateway, EC2 Auto Scaling, S3, ECR, VPC, Route 53, ELB, WAF, IAM, Parameter Store, CloudWatch · Azure core & app services · Vercel, Render |
 | **Data & persistence** | SQL Server, PostgreSQL, DynamoDB (single-table design, GSIs, conditional writes, TTL), MongoDB, Amazon RDS, T-SQL performance tuning, layered caching |
-| **AI & third-party APIs** | OpenAI API (function calling, multimodal extraction), Anthropic Claude API, prompt engineering, Meta Graph API, WebXPay |
+| **AI & third-party APIs** | OpenAI API (function calling, multimodal extraction), Anthropic Claude API, OpenRouter, prompt engineering, Meta Graph API, Stripe, WebXPay |
+| **Testing** | xUnit, Vitest, React Testing Library, Supertest — integration tests against real databases (SQLite, in-memory MongoDB replica sets) rather than mocks |
 | **DevOps & practices** | Docker, GitHub Actions CI/CD (multi-region), Git, Jira, Confluence, code review, QA sign-off, mentoring |
 
 ---
